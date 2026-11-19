@@ -1,0 +1,1122 @@
+<!doctype html>
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>クリーンクエスト(仮称)| 武蔵野市・三鷹市・小金井市の実証実験</title>
+<meta name="description" content="見つけたごみを写真1枚で報告でき、拾って捨てるとポイントとバッジが集まるアプリ。武蔵野市・三鷹市・小金井市で行う、無料の実証実験です。インストール不要、スマホのブラウザで使えます。">
+<meta name="theme-color" content="#FFFFFF">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+@font-face{font-family:"Schibsted Grotesk";font-style:normal;font-weight:400 500;font-display:swap;src:url("fonts/schibsted-grotesk-latin-ext.woff2") format("woff2");unicode-range:U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C4,U+2113,U+2C60-2C7F,U+A720-A7FF}
+@font-face{font-family:"Schibsted Grotesk";font-style:normal;font-weight:400 500;font-display:swap;src:url("fonts/schibsted-grotesk-latin.woff2") format("woff2");unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD}
+@property --t{syntax:"<number>";inherits:true;initial-value:1}
+
+:root{
+  --bg:#FFFFFF;
+  --bg-2:#F3F4F1;
+  --ink:#2B2A28;
+  --ink-2:#5E5B57;
+  --line:rgba(43,42,40,.16);
+  --green:#2E7D4F;
+  --green-ink:#1F5C39;
+  --green-tint:#DCEADF;
+  --sand:#E9E1CF;
+  --gothic:"Zen Kaku Gothic New","Hiragino Kaku Gothic ProN","Hiragino Sans","Yu Gothic",sans-serif;
+  --latin:"Schibsted Grotesk","Helvetica Neue",Arial,sans-serif;
+  --gutter:clamp(20px,3vw,44px);
+  --ease:cubic-bezier(.16,1,.3,1);
+  --section:clamp(120px,17vh,210px);
+  --side:var(--gutter);
+}
+@media (min-width:1100px){:root{--side:clamp(150px,11vw,200px)}}
+*,*::before,*::after{box-sizing:border-box}
+html{word-break:auto-phrase;line-break:strict;-webkit-text-size-adjust:100%;scroll-behavior:smooth;scroll-padding-top:90px;scrollbar-color:#B9BDB6 var(--bg)}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--gothic);font-size:1rem;line-height:1.95;letter-spacing:.04em;-webkit-font-smoothing:antialiased;overflow-x:clip}
+::selection{background:var(--green);color:#fff}
+svg{display:block}
+a{color:inherit;text-underline-offset:.3em;text-decoration-thickness:1px}
+:focus-visible{outline:2px solid var(--green);outline-offset:3px;border-radius:4px}
+h1,h2,h3,h4,h5,p,ul,ol,dl,dd,figure{margin:0}
+ul,ol{padding:0;list-style:none}
+.latin{font-family:var(--latin);letter-spacing:.01em}
+.num{font-family:var(--latin);font-variant-numeric:tabular-nums;letter-spacing:0}
+.tbd{display:inline-block;padding:0 .35em;background:#F6E7B4;color:#3B3112;border-radius:3px}
+.wrap{padding-left:var(--side);padding-right:var(--gutter);max-width:1480px;margin-inline:auto}
+
+/* ---------- header ---------- */
+.hdr{position:fixed;inset:0 0 auto;z-index:50;display:flex;align-items:center;justify-content:space-between;gap:20px;padding:18px var(--gutter);pointer-events:none}
+.hdr > *{pointer-events:auto}
+.hdr::before{content:"";position:absolute;inset:0;z-index:-1;background:var(--bg);opacity:0;transition:opacity .5s var(--ease)}
+.hdr.is-scrolled::before{opacity:.94}
+.logo{display:flex;align-items:center;gap:14px;text-decoration:none;color:var(--ink)}
+.logo-word{height:20px;width:auto;overflow:visible}
+.logo-word rect,.logo-word circle{transition:transform .7s var(--ease)}
+.logo-fallback{font-family:var(--latin);font-weight:500;font-size:1.0625rem;letter-spacing:.06em}
+.js .logo-fallback{display:none}
+.no-js .logo-word{display:none}
+.tag-exp{font-size:.6875rem;line-height:1;padding:6px 10px;border-radius:999px;background:var(--green-tint);color:var(--green-ink);font-weight:700;letter-spacing:.08em;white-space:nowrap}
+.hdr-right{display:flex;align-items:center;gap:14px}
+.pill{white-space:nowrap}
+@media (max-width:560px){.tag-exp{display:none}.logo-word{height:15px}.hdr{padding:14px var(--gutter)}}
+
+/* ---------- pills ---------- */
+.pill{display:inline-flex;align-items:center;gap:12px;border-radius:999px;text-decoration:none;font-size:.9375rem;font-weight:700;letter-spacing:.08em;padding:12px 12px 12px 24px;background:var(--green);color:#fff;border:1px solid var(--green);transition:background-color .4s var(--ease),color .4s var(--ease),border-color .4s var(--ease)}
+.pill-dot{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#fff;color:var(--green);transition:transform .6s var(--ease)}
+.pill-dot svg{width:12px;height:12px}
+.pill:hover{background:var(--green-ink);border-color:var(--green-ink)}
+.pill:hover .pill-dot{transform:translateX(3px)}
+.pill--line{background:transparent;color:var(--green-ink);padding:12px 22px}
+.pill--line:hover{background:var(--green-tint);border-color:var(--green)}
+.pill--line svg{width:12px;height:12px;transition:transform .6s var(--ease)}
+.pill--line:hover svg{transform:translateY(3px)}
+.pill--sm{font-size:.8125rem;padding:7px 7px 7px 16px;gap:10px}
+.pill--sm .pill-dot{width:22px;height:22px}
+.pill--sm .pill-dot svg{width:10px;height:10px}
+
+/* ---------- fixed side nav (bottom-left) ---------- */
+.side{position:fixed;left:var(--gutter);bottom:28px;z-index:45;display:grid;gap:22px;font-family:var(--latin);font-size:.8125rem;font-weight:500;letter-spacing:.04em;line-height:1.55}
+.side ul{display:grid;gap:1px}
+.side a{display:inline-flex;align-items:center;gap:8px;text-decoration:none;color:var(--ink)}
+.side a::after{content:"";width:7px;height:7px;border-radius:50%;background:var(--green);transform:scale(0);transition:transform .5s var(--ease)}
+.side a[aria-current="true"]::after{transform:none}
+.side a:hover{color:var(--green)}
+.pick-toggle{appearance:none;border:0;background:none;padding:0;font:inherit;color:var(--ink);cursor:pointer;text-align:left;display:inline-flex;gap:6px;align-items:baseline}
+.pick-toggle b{font-weight:500;color:var(--green)}
+.pick-toggle[aria-pressed="false"] b{color:var(--ink-2)}
+.pick-count{font-size:.6875rem;color:var(--ink-2);font-family:var(--gothic);letter-spacing:.06em;min-height:1.6em}
+.side-cur{display:none}
+@media (max-width:1099px){
+  .side{bottom:16px;gap:0;background:#fff;border:1px solid var(--line);border-radius:18px;padding:8px 14px;box-shadow:0 12px 28px -18px rgba(43,42,40,.45)}
+  .side ul{display:none;padding:6px 0 8px}
+  .side.open ul{display:grid}
+  .side > div{display:none}
+  .side-cur{appearance:none;border:0;background:none;padding:2px 0;font:inherit;color:var(--ink);display:inline-flex;align-items:center;gap:8px;cursor:pointer}
+  .side-cur i{width:7px;height:7px;border-radius:50%;background:var(--green)}
+  .side a{padding:4px 0}
+}
+@media (max-width:760px){.side{bottom:52px;left:12px}}
+
+/* ---------- ticker (bottom-right) ---------- */
+.ticker{position:fixed;right:0;bottom:0;z-index:45;width:min(440px,100vw);height:52px;background:var(--green);color:#fff;overflow:hidden;display:flex;align-items:center;font-size:.8125rem;font-weight:700;letter-spacing:.08em}
+.ticker-track{display:inline-flex;white-space:nowrap;padding-left:20px}
+.ticker-track span{display:inline-flex;align-items:center;gap:14px;padding-right:14px}
+.ticker-track span::after{content:"";width:1px;height:14px;background:rgba(255,255,255,.55)}
+.js .ticker-track{animation:tick 26s linear infinite}
+.ticker:hover .ticker-track{animation-play-state:paused}
+@keyframes tick{to{transform:translateX(-50%)}}
+@media (max-width:760px){.ticker{width:100vw;height:40px;font-size:.75rem}body{padding-bottom:40px}}
+
+/* ---------- fragments ---------- */
+.frag{position:absolute;left:var(--x);top:var(--y);width:var(--w);height:auto;transform:rotate(var(--r));pointer-events:none;overflow:visible}
+.frag-in{transform-box:fill-box;transform-origin:center}
+.js .frag-in{animation:drift var(--dur,9s) ease-in-out infinite alternate;animation-delay:var(--delay,0s)}
+@keyframes drift{to{transform:translate(var(--dx,6px),var(--dy,-10px)) rotate(var(--dr,4deg))}}
+.picking .frag{pointer-events:auto;cursor:grab}
+.frag.picked{transition:transform 1s var(--ease),opacity 1s var(--ease);opacity:0}
+.f-green{fill:var(--green)}
+.f-ink{fill:var(--ink)}
+.f-tint{fill:var(--green-tint)}
+.f-sand{fill:var(--sand)}
+.f-gray{fill:#C9CCC5}
+
+/* ---------- map drawing ---------- */
+.m-ground{fill:var(--m-ground,#ECEEEA)}
+.m-park{fill:var(--m-park,#D5E5D8)}
+.m-minor{fill:none;stroke:var(--m-minor,rgba(43,42,40,.2));stroke-width:1.6;stroke-linecap:round}
+.m-major{fill:none;stroke:var(--m-major,rgba(43,42,40,.38));stroke-width:5;stroke-linecap:round}
+.m-rail-base{fill:none;stroke:var(--m-rail,#2B2A28);stroke-width:6}
+.m-rail-dash{fill:none;stroke:var(--m-ground,#ECEEEA);stroke-width:3;stroke-dasharray:16 16}
+.m-st{fill:#fff;stroke:var(--m-rail,#2B2A28);stroke-width:2}
+.m-label{fill:var(--ink);font-family:var(--gothic);font-size:17px;letter-spacing:.08em;font-weight:500}
+.pin-body{fill:var(--pin-fill,#2B2A28);stroke:#fff;stroke-width:2.5}
+.pin-dot{fill:#fff}
+.pin--ok{--pin-fill:var(--green)}
+.pin--found .pin-body{fill:#fff;stroke:var(--ink)}
+.pin--found .pin-dot{fill:var(--ink)}
+.pin-drop{transform-box:fill-box;transform-origin:50% 100%}
+
+/* ---------- hero ---------- */
+.hero{position:relative;min-height:100svh;display:flex;align-items:center;padding:120px var(--gutter) 110px var(--side);overflow:hidden}
+.hero-frags{position:absolute;inset:0}
+.hero-in{position:relative;z-index:2;max-width:40rem}
+.hero h1{font-weight:500;font-size:clamp(2.25rem,1rem + 4vw,4.75rem);line-height:1.38;letter-spacing:.04em;font-feature-settings:"palt"}
+.hero h1 .ln{display:block;white-space:nowrap}
+.hero-lead{margin-top:clamp(22px,3.5vh,34px);font-size:clamp(.9375rem,.88rem + .25vw,1.0625rem);line-height:2.05}
+.hero-cta{display:flex;flex-wrap:wrap;gap:14px;margin-top:clamp(26px,4vh,40px)}
+.hero-facts{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px}
+.hero-facts li{font-size:.8125rem;font-weight:500;padding:5px 14px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.86)}
+.hero-note{margin-top:14px;font-size:.75rem;color:var(--ink-2)}
+.hero h1 .ln > span{display:inline-block}
+.js .hero h1 .ln > span{animation:rise 1.2s var(--ease) both;animation-delay:calc(150ms + var(--i,0) * 130ms)}
+@keyframes rise{from{transform:translateY(40%);opacity:0;filter:blur(6px)}}
+@media (max-width:760px){
+  .hero{align-items:flex-end;padding-top:140px;padding-bottom:150px}
+  .hero-frags{bottom:auto;height:18%}
+  .hero .frag{width:calc(var(--w) * 1.6)}
+  .hero-facts li{font-size:.75rem}
+}
+
+/* ---------- section head (RE:SHAPE風の行) ---------- */
+.shead{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr) minmax(0,.8fr);align-items:end;column-gap:var(--gutter);margin-bottom:clamp(36px,6vh,64px)}
+.shead-word{font-family:var(--latin);font-weight:500;font-size:clamp(2.75rem,1.4rem + 4.6vw,6rem);line-height:.92;letter-spacing:-.03em;color:var(--ink);white-space:nowrap}
+.shead-word span{display:inline-block}
+.js .shead-word span{transform:translate(var(--sx,0),var(--sy,0)) rotate(var(--sr,0));opacity:0;transition:transform 1.4s var(--ease),opacity .9s var(--ease);transition-delay:calc(var(--i,0) * 45ms)}
+.js .shead.is-in .shead-word span{transform:none;opacity:1}
+.shead h2{font-size:clamp(1rem,.9rem + .4vw,1.25rem);font-weight:700;letter-spacing:.1em;color:var(--green-ink);padding-bottom:.35em}
+.shead-tag{justify-self:end;font-family:var(--latin);font-size:.8125rem;color:var(--ink-2);padding-bottom:.6em;text-align:right}
+@media (max-width:900px){
+  .shead{grid-template-columns:1fr;row-gap:10px}
+  .shead-tag{justify-self:start;text-align:left}
+}
+
+/* ---------- concept (3.2) ---------- */
+.concept{display:grid;grid-template-columns:repeat(12,1fr);column-gap:var(--gutter);align-items:center;padding-block:var(--section)}
+.mosaic{grid-column:1 / 7;position:relative;aspect-ratio:1/1.02}
+.mosaic svg.tile{position:absolute;overflow:hidden}
+.concept-body{grid-column:8 / 13}
+.concept-body h2{font-size:clamp(1.5rem,1.1rem + 1.4vw,2.25rem);font-weight:500;line-height:1.6;letter-spacing:.06em;font-feature-settings:"palt";margin-bottom:28px}
+.concept-body p{font-size:1rem;line-height:2.1}
+.concept-body p + p{margin-top:1.2em}
+.concept-body strong{font-weight:700;background:linear-gradient(transparent 62%,var(--green-tint) 62%)}
+.honest{margin-top:40px;padding:24px 26px;border:1.5px solid var(--green);border-radius:16px;display:grid;grid-template-columns:auto 1fr;gap:6px 16px}
+.honest svg{width:22px;height:22px;grid-row:span 2;margin-top:3px;color:var(--green)}
+.honest h3{font-size:.9375rem;font-weight:700;letter-spacing:.08em;color:var(--green-ink)}
+.honest p{font-size:.9375rem;line-height:1.95}
+@media (max-width:900px){.mosaic,.concept-body{grid-column:1 / -1}.concept-body{margin-top:48px}.mosaic{max-width:460px;width:100%}}
+
+/* ---------- assembly (signature) ---------- */
+.assemble{position:relative}
+.js .assemble{height:240vh}
+.assemble-sticky{position:sticky;top:0;height:100vh;height:100svh;display:grid;place-items:center;overflow:hidden}
+.assemble-word{width:min(1120px,88vw);height:auto;overflow:visible;--t:1}
+.assemble-word rect,.assemble-word circle,.logo-word rect,.logo-word circle{transform-box:fill-box;transform-origin:center;
+  transform:translate(calc(var(--tx) * 1px * (1 - var(--t))),calc(var(--ty) * 1px * (1 - var(--t)))) rotate(calc(var(--tr) * 1deg * (1 - var(--t))))}
+.assemble-word .scrap{opacity:calc(1 - var(--t))}
+.assemble-cap{position:absolute;left:0;right:0;bottom:clamp(64px,14vh,140px);text-align:center;font-size:clamp(.9375rem,.85rem + .4vw,1.125rem);letter-spacing:.1em;transition:opacity .8s var(--ease)}
+.assemble-cap small{display:block;margin-top:6px;font-family:var(--latin);font-size:.8125rem;color:var(--ink-2);letter-spacing:.02em}
+.js .assemble-cap{opacity:0}
+.js .assemble-cap.on{opacity:1}
+
+/* ---------- how (3.3) ---------- */
+.panel{position:relative;margin-left:var(--gutter);margin-right:var(--gutter);border-radius:4px;overflow:hidden;background:#ECEEEA;min-height:640px}
+.panel > svg{position:absolute;inset:0;width:100%;height:100%}
+.panel-card{position:relative;z-index:2;width:min(600px,100%);margin:clamp(20px,4vw,56px);margin-left:max(clamp(20px,4vw,56px),calc(var(--side) - var(--gutter)));background:#fff;border-radius:16px;padding:clamp(24px,3vw,40px);box-shadow:0 24px 48px -28px rgba(43,42,40,.35)}
+.panel-card h3{font-size:clamp(1.375rem,1.1rem + 1vw,1.875rem);font-weight:500;letter-spacing:.06em;line-height:1.5}
+.panel-card > p{margin-top:8px;font-size:.9375rem;color:var(--ink-2)}
+.types{margin-top:22px;border-top:1px solid var(--line)}
+.type{display:grid;grid-template-columns:1fr auto;gap:4px 16px;padding:20px 0;border-bottom:1px solid var(--line)}
+.type h4{margin:0;font-size:1.125rem;font-weight:700;letter-spacing:.08em}
+.type-pt{grid-row:span 2;align-self:center;text-align:right;line-height:1}
+.type-pt .num{display:block;font-size:clamp(2rem,1.3rem + 2vw,3rem);font-weight:500;color:var(--green);letter-spacing:-.02em}
+.type-pt small{font-size:.6875rem;color:var(--ink-2);letter-spacing:.1em}
+.type p{font-size:.875rem;line-height:1.9}
+.type .when{grid-column:1 / -1;font-size:.8125rem;color:var(--ink-2)}
+.type .when b{font-weight:700;color:var(--green-ink);margin-right:10px}
+.exchange{margin-top:22px;display:flex;gap:12px;align-items:flex-start;padding:14px 18px;border-radius:12px;background:var(--sand);font-size:.875rem;line-height:1.85}
+.exchange svg{flex:none;width:18px;height:18px;margin-top:4px}
+.exchange b{font-weight:700}
+@media (max-width:760px){.panel{min-height:0;padding-top:46vw}.panel-card{margin:0 12px 12px;width:auto}}
+
+/* ---------- flow circle (3.3 flow) ---------- */
+.flow{position:relative}
+.js .flow{height:330vh}
+.flow-sticky{position:sticky;top:0;height:100vh;height:100svh;display:grid;grid-template-columns:var(--side) 1fr;overflow:hidden}
+.flow-shead{position:absolute;left:var(--side);right:var(--gutter);top:clamp(76px,11vh,110px);z-index:3;margin:0}
+.flow-shead .shead-word{font-size:clamp(2.25rem,1.2rem + 3vw,4rem)}
+.ring{position:absolute;left:50%;top:calc(50% + 48px);width:var(--d);height:var(--d);transform:translate(-50%,-50%);--d:min(56vh,440px,74vw)}
+.ring svg.arc{position:absolute;inset:-4%;width:108%;height:108%;overflow:visible}
+.arc-base{fill:none;stroke:var(--green-tint);stroke-width:1.2}
+.arc-path{fill:none;stroke:var(--green);stroke-width:1.6;stroke-linecap:round}
+.arc-head{fill:none;stroke:var(--green);stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.node{position:absolute;width:clamp(96px,13vh,170px);aspect-ratio:3/4;transform:translate(-50%,-50%);border-radius:6px;overflow:hidden;transition:filter .8s var(--ease),opacity .8s var(--ease)}
+.node svg{width:100%;height:100%}
+.node:not(.on){filter:grayscale(1) sepia(.35) hue-rotate(60deg) saturate(1.6) brightness(1.18) contrast(.72);opacity:.75}
+.node-1{left:50%;top:0}
+.node-2{left:93.3%;top:75%}
+.node-3{left:6.7%;top:75%}
+.ring-center{position:absolute;inset:22%;display:grid;place-items:center;text-align:center}
+.step{grid-area:1 / 1;display:grid;justify-items:center;gap:6px;transition:opacity .6s var(--ease),transform .8s var(--ease)}
+.step:not(.on){opacity:0;transform:translateY(14px)}
+.js .step:not(.on){pointer-events:none}
+.step-top{display:flex;gap:18px;font-size:.8125rem}
+.step-top .num{color:var(--ink-2)}
+.step .step-word{font-family:var(--latin);font-weight:500;font-size:clamp(1.75rem,1.2rem + 2vw,2.75rem);line-height:1;letter-spacing:-.02em}
+.step p{font-size:.8125rem;line-height:1.75;max-width:15em}
+.step p b{font-weight:700}
+.flow-hint{position:absolute;left:50%;bottom:76px;transform:translateX(-50%);font-family:var(--latin);font-size:.75rem;color:var(--ink-2);display:grid;justify-items:center;gap:2px}
+.flow-hint svg{width:16px;height:10px}
+.no-js .step:not(.on),.flow.static .step:not(.on){opacity:1;transform:none}
+.flow.static .flow-sticky{position:relative;height:auto;display:block;padding:var(--section) var(--gutter)}
+.flow.static .ring{position:relative;left:auto;top:auto;transform:none;margin:60px auto}
+.flow.static .flow-sticky{padding-left:var(--side);padding-right:var(--gutter)}
+.flow.static .flow-shead{position:static;margin-bottom:24px}
+.rm .step{transition:none}
+.flow.static .ring{margin:150px auto 120px}
+.flow.static .ring-center{position:static;inset:auto;display:grid;align-items:start;grid-template-columns:repeat(3,1fr);gap:28px;max-width:1040px;margin:0 auto}
+.flow.static .step{grid-area:auto;justify-items:start;text-align:left;padding-top:18px;border-top:1px solid var(--line)}
+.flow.static .flow-hint{display:none}
+@media (max-width:760px){.flow.static .ring-center{grid-template-columns:1fr}}
+@media (max-width:760px){
+  .ring{--d:min(78vw,52vh);top:52%}
+  .ring-center{inset:18%}
+  .node{width:64px}
+  .step .step-word{font-size:1.5rem}
+  .step p{font-size:.75rem}
+}
+
+/* ---------- phones ---------- */
+.phone-wrap{display:grid;gap:14px;justify-items:center}
+.phone-label{font-family:var(--latin);font-size:.75rem;color:var(--ink-2);display:flex;align-items:center;gap:8px}
+.phone-label::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--green)}
+.phone{width:min(288px,76vw);aspect-ratio:288/596;border-radius:44px;background:var(--ink);padding:9px;box-shadow:0 40px 70px -40px rgba(43,42,40,.55)}
+.scr{position:relative;height:100%;border-radius:35px;overflow:hidden;background:#F7F8F6;color:var(--ink);display:flex;flex-direction:column;font-size:12px;line-height:1.6;letter-spacing:.03em}
+.scr-bar{flex:none;height:62px;display:flex;align-items:flex-end;justify-content:center;padding-bottom:8px;font-size:12.5px;font-weight:700;letter-spacing:.1em;position:relative;z-index:2;background:#F7F8F6}
+.scr-bar::before{content:"";position:absolute;top:10px;left:50%;width:74px;height:20px;margin-left:-37px;border-radius:12px;background:var(--ink)}
+.scr-ex{position:absolute;top:40px;right:16px;z-index:3;font-size:11px;font-weight:700;padding:1px 7px;background:#F6E7B4;color:#3B3112;border-radius:3px}
+.scr-body{flex:1;padding:12px 14px 16px;display:flex;flex-direction:column;gap:12px;overflow:hidden}
+.scr-foot{font-size:11px;color:var(--ink-2);line-height:1.5}
+.scr--map .scr-map{position:absolute;inset:62px 0 0}
+.scr--map .scr-map svg{width:100%;height:100%}
+.sheet{position:absolute;left:10px;right:10px;bottom:10px;z-index:2;background:#fff;border-radius:16px;padding:14px;display:grid;gap:8px;box-shadow:0 10px 24px -12px rgba(43,42,40,.4)}
+.sheet-row{display:flex;align-items:center;gap:8px}
+.sheet-kind{font-size:15px;font-weight:700;letter-spacing:.06em}
+.st-ok{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:var(--green);padding:2px 8px;border:1px solid var(--green);border-radius:20px}
+.st-ok svg{width:10px;height:10px}
+.sheet-place{font-size:11.5px;color:var(--ink-2);display:flex;gap:6px;align-items:center}
+.sheet-place svg{width:12px;height:12px;flex:none}
+.sheet-btn{margin-top:4px;display:flex;justify-content:center;align-items:center;gap:8px;background:var(--green);color:#fff;font-size:12.5px;font-weight:700;letter-spacing:.1em;padding:11px;border-radius:999px}
+.sheet-btn svg{width:14px;height:14px}
+.lv{display:flex;justify-content:space-between;align-items:baseline}
+.lv b{font-size:18px;font-weight:700}
+.lv b .num{font-size:20px}
+.lv span{font-size:11px;color:var(--ink-2)}
+.bar{height:6px;border-radius:3px;background:#E3E6E0;overflow:hidden}
+.bar i{display:block;height:100%;width:62%;background:var(--green);border-radius:3px}
+.town{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;padding:10px;background:var(--green-tint);border-radius:12px}
+.slot{aspect-ratio:1;border-radius:8px;background:#fff;display:grid;place-items:center}
+.slot svg{width:70%;height:70%}
+.slot--empty{background:transparent;border:1.5px dashed rgba(43,42,40,.22)}
+.coins{display:flex;justify-content:space-between;font-size:11px;color:var(--ink-2)}
+.coins b{color:var(--ink);font-weight:700}
+.badges{display:grid;grid-template-columns:repeat(6,1fr);gap:6px}
+.badge{aspect-ratio:1;border-radius:50%;display:grid;place-items:center;background:var(--green);color:#fff}
+.badge svg{width:55%;height:55%}
+.badge--off{background:transparent;border:1.5px solid rgba(43,42,40,.25);color:rgba(43,42,40,.35)}
+.sub-h{font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--ink-2)}
+.rk-note{font-size:11px;color:var(--ink-2)}
+.rk li{display:grid;grid-template-columns:26px 1fr auto;align-items:center;gap:8px;padding:9px 2px;border-bottom:1px solid rgba(43,42,40,.1);font-size:12.5px}
+.rk .num{font-size:13px}
+.rk li:first-child .num:first-child{color:var(--green);font-weight:500}
+.rk .me{background:var(--green-tint);border-radius:8px;border-bottom-color:transparent;padding-inline:8px;margin-inline:-6px}
+.rk .hid{color:var(--ink-2)}
+.toggle{display:flex;justify-content:space-between;align-items:center;font-size:11.5px;padding:10px 12px;background:#fff;border-radius:10px}
+.toggle i{width:34px;height:20px;border-radius:10px;background:var(--green);position:relative}
+.toggle i::after{content:"";position:absolute;top:2px;right:2px;width:16px;height:16px;border-radius:50%;background:#fff}
+.tabs{display:flex;gap:4px;padding:3px;background:#E8EAE5;border-radius:999px;font-size:11.5px;font-weight:700}
+.tabs span{flex:1;text-align:center;padding:5px 0;border-radius:999px;color:var(--ink-2)}
+.tabs span.on{background:#fff;color:var(--ink)}
+.post{background:#fff;border-radius:14px;padding:12px;display:grid;gap:7px}
+.post-tag{justify-self:start;font-size:11px;font-weight:700;letter-spacing:.06em;padding:1px 8px;border-radius:20px;background:var(--green-tint);color:var(--green-ink)}
+.post-tag--info{background:var(--sand);color:#5A4A22}
+.post .post-title{font-size:13px;font-weight:700;letter-spacing:.04em;line-height:1.5}
+.post dl{display:grid;grid-template-columns:auto 1fr;gap:1px 10px;font-size:11px}
+.post dt{color:var(--ink-2)}
+.post-photo{height:74px;border-radius:9px;background:#E3E6E0;display:grid;place-items:center;color:var(--ink-2);font-size:11px;gap:2px;align-content:center}
+.post-photo svg{width:20px;height:20px}
+.acts{display:flex;align-items:center;gap:14px;font-size:11px;color:var(--ink-2)}
+.acts span{display:inline-flex;align-items:center;gap:4px}
+.acts svg{width:13px;height:13px}
+.acts .join{margin-left:auto;color:#fff;background:var(--green);padding:3px 12px;border-radius:20px;font-weight:700}
+
+/* ---------- light sections ---------- */
+.sec{padding-top:var(--section);padding-bottom:var(--section)}
+.sec--tint{background:var(--bg);border-top:1px solid var(--line)}
+.grid{display:grid;grid-template-columns:repeat(12,1fr);column-gap:var(--gutter)}
+.rows{border-top:1px solid var(--line)}
+.rows > li,.rows > div{display:grid;grid-template-columns:minmax(9em,1fr) 2.2fr;column-gap:var(--gutter);padding:24px 0;border-bottom:1px solid var(--line)}
+.rows h3,.rows dt{font-size:1rem;font-weight:700;letter-spacing:.08em;line-height:1.8}
+.rows p,.rows dd{font-size:.9375rem;line-height:1.95;max-width:36em}
+.rows .mark{font-weight:700;background:linear-gradient(transparent 62%,var(--green-tint) 62%)}
+.col-text{grid-column:1 / 8}
+.col-fig{grid-column:9 / 13;justify-self:center}
+.figs{display:flex;flex-wrap:wrap;gap:clamp(32px,5vw,72px);margin-top:clamp(56px,9vh,96px);justify-content:flex-start}
+.figs .phone-wrap:nth-child(2){margin-top:clamp(0px,9vh,110px)}
+.safety{border-top:1px solid var(--ink)}
+.safety li{display:grid;grid-template-columns:4.2em minmax(10em,1fr) 2fr;column-gap:var(--gutter);padding:28px 0;border-bottom:1px solid var(--line);align-items:baseline}
+.safety .num{font-size:.875rem;color:var(--green)}
+.safety h3{font-size:clamp(1.0625rem,1rem + .4vw,1.3125rem);font-weight:700;letter-spacing:.08em;line-height:1.6}
+.safety p{font-size:.9375rem;line-height:1.95;max-width:36em}
+.lead{font-size:.9375rem;color:var(--ink-2);margin:-24px 0 36px}
+.faq{border-top:1px solid var(--line)}
+.faq details{border-bottom:1px solid var(--line)}
+.faq summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:2.4em 1fr 30px;align-items:center;gap:12px;padding:22px 0;font-size:1.0625rem;font-weight:500;letter-spacing:.06em;transition:color .3s var(--ease)}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary .latin{font-size:.875rem;color:var(--green)}
+.faq summary:hover{color:var(--green-ink)}
+.pm{position:relative;width:30px;height:30px;border-radius:50%;border:1px solid var(--line);justify-self:end}
+.pm::before,.pm::after{content:"";position:absolute;left:9px;right:9px;top:50%;height:1.5px;margin-top:-.75px;background:currentColor;transition:transform .5s var(--ease)}
+.pm::after{transform:rotate(90deg)}
+.faq details[open] .pm::after{transform:rotate(0)}
+.faq .ans{display:grid;grid-template-columns:2.4em 1fr;gap:12px;padding:0 42px 26px 0;font-size:.9375rem;line-height:1.95}
+.faq .ans .latin{font-size:.875rem;color:var(--ink-2)}
+@media (max-width:900px){
+  .col-text,.col-fig{grid-column:1 / -1}
+  .col-fig{margin-top:56px}
+}
+@media (max-width:760px){
+  .rows > li,.rows > div{grid-template-columns:1fr;row-gap:4px;padding:20px 0}
+  .safety li{grid-template-columns:2.6em 1fr;row-gap:4px}
+  .safety p{grid-column:2}
+  .figs{justify-content:center}
+  .figs .phone-wrap:nth-child(2){margin-top:0}
+}
+
+/* ---------- closing ---------- */
+.closing{position:relative;overflow:hidden;padding-top:var(--section);padding-bottom:clamp(80px,12vh,140px);text-align:left}
+.closing h2{font-weight:500;font-size:clamp(2.5rem,1rem + 5vw,6rem);line-height:1.3;letter-spacing:.04em;font-feature-settings:"palt"}
+.closing p{margin-top:24px;font-size:1.0625rem;line-height:2}
+.closing .pill{margin-top:34px}
+.closing .frag{opacity:.95}
+
+/* ---------- footer ---------- */
+.ftr{border-top:1px solid var(--line);padding-top:48px;padding-bottom:110px}
+.ftr-word{width:min(760px,100%);height:auto;margin-bottom:44px;overflow:visible}
+.ftr-grid{display:grid;grid-template-columns:repeat(12,1fr);column-gap:var(--gutter);row-gap:24px;font-size:.8125rem;color:var(--ink-2);line-height:1.9}
+.ftr dl{grid-column:1 / 9;display:grid;grid-template-columns:max-content 1fr;gap:8px 28px}
+.ftr dt{color:var(--ink);font-weight:700}
+.ftr small{grid-column:1 / -1;font-size:.75rem}
+@media (max-width:760px){.ftr dl{grid-column:1 / -1;grid-template-columns:1fr;gap:0}.ftr dd + dt{margin-top:12px}}
+
+.toast{position:fixed;left:50%;bottom:72px;z-index:60;transform:translate(-50%,20px);opacity:0;pointer-events:none;background:var(--ink);color:#fff;font-size:.875rem;padding:14px 22px;border-radius:999px;max-width:calc(100vw - 40px);transition:opacity .4s var(--ease),transform .6s var(--ease)}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+/* 動きを減らす設定(または ?static)では、固定パネルをほどいて全部を静かに並べる */
+html.rm{scroll-behavior:auto}
+.rm .frag-in,.rm .ticker-track{animation:none!important}
+.rm .hero h1 .ln > span,.rm .shead-word span{transform:none!important;opacity:1!important;filter:none!important;transition:none!important;animation:none!important}
+.rm .assemble{height:auto!important}
+.rm .flow{height:auto!important}
+.rm .assemble-sticky{position:relative;height:auto;padding:var(--section) 0}
+.rm .assemble-cap{position:static;opacity:1;margin-top:28px}
+</style>
+</head>
+<body>
+<script>document.documentElement.classList.add('js');</script>
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <defs>
+    <g id="pin-shape" class="pin-drop">
+      <path class="pin-body" d="M0 0 C-6 -9 -14 -17 -14 -27 A14 14 0 1 1 14 -27 C14 -17 6 -9 0 0Z"/>
+      <circle class="pin-dot" cy="-27" r="5"/>
+    </g>
+    <g id="streets">
+      <rect class="m-ground" width="1600" height="600"/>
+      <path class="m-park" d="M1172 470 C1226 428 1330 422 1402 444 C1466 464 1494 522 1476 600 L1166 600 C1146 560 1146 504 1172 470Z"/>
+      <rect class="m-park" x="40" y="170" width="170" height="110" rx="6"/>
+      <rect class="m-park" x="700" y="250" width="70" height="56" rx="4"/>
+      <g class="m-minor">
+        <path d="M0 60 L262 64 M262 64 C400 58 520 70 640 62 M640 62 L988 56 M988 56 L1296 50 M1296 50 L1600 46"/>
+        <path d="M0 230 L262 232 M262 232 L640 226 M640 226 C760 236 880 220 988 224 M988 224 L1296 214 M1296 214 L1600 210"/>
+        <path d="M0 400 L262 396 M262 396 C420 404 520 390 640 394 M664 392 L962 386 M962 386 L1306 372 M1306 372 L1600 366"/>
+        <path d="M0 550 L274 546 M274 546 L664 540 M962 534 L1170 528 M1476 520 L1600 518"/>
+        <path d="M120 0 L130 600 M400 140 L410 478 M520 0 L515 140 M500 226 L508 470 M800 120 L790 450 M880 0 L884 120 M1130 104 L1120 430 M1450 104 L1460 420 M180 478 L190 600 M820 445 L830 600 M1080 430 L1074 600"/>
+        <path d="M560 300 C590 330 612 330 640 318 M330 300 L400 302 M880 300 L962 296 M1180 160 C1220 180 1250 176 1296 160 M40 320 L120 318"/>
+      </g>
+      <g class="m-major">
+        <path d="M0 140 C320 150 720 118 1600 104"/>
+        <path d="M0 478 C380 462 820 440 1600 420"/>
+        <path d="M262 0 C266 200 258 420 274 600"/>
+        <path d="M640 0 C652 180 628 400 664 600"/>
+        <path d="M988 0 L962 600"/>
+        <path d="M1296 0 C1286 240 1318 400 1306 600"/>
+        <path d="M1520 0 L1210 600" style="stroke-width:4"/>
+      </g>
+      <path class="m-rail-base" d="M0 338 L1600 302"/>
+      <path class="m-rail-dash" d="M0 338 L1600 302"/>
+      <g>
+        <rect class="m-st" x="154" y="328" width="32" height="12" rx="3"/>
+        <rect class="m-st" x="454" y="321.4" width="32" height="12" rx="3"/>
+        <rect class="m-st" x="754" y="314.7" width="32" height="12" rx="3"/>
+        <rect class="m-st" x="1054" y="307.9" width="32" height="12" rx="3"/>
+        <rect class="m-st" x="1354" y="301.2" width="32" height="12" rx="3"/>
+        <text class="m-label" x="170" y="372" text-anchor="middle">武蔵小金井</text>
+        <text class="m-label" x="470" y="365" text-anchor="middle">東小金井</text>
+        <text class="m-label" x="770" y="358" text-anchor="middle">武蔵境</text>
+        <text class="m-label" x="1070" y="351" text-anchor="middle">三鷹</text>
+        <text class="m-label" x="1370" y="345" text-anchor="middle">吉祥寺</text>
+      </g>
+    </g>
+    <pattern id="mapA" patternUnits="userSpaceOnUse" width="1600" height="600" patternTransform="scale(.16) translate(-900 -120)"><use href="#streets"/></pattern>
+    <pattern id="mapB" patternUnits="userSpaceOnUse" width="1600" height="600" patternTransform="scale(.2) translate(-300 -200)"><use href="#streets"/></pattern>
+    <pattern id="mapC" patternUnits="userSpaceOnUse" width="1600" height="600" patternTransform="scale(.13) translate(-1150 -60)"><use href="#streets"/></pattern>
+  </defs>
+</svg>
+
+<header class="hdr" id="hdr">
+  <a class="logo" href="#top" aria-label="クリーンクエスト(仮称)トップへ">
+    <svg class="logo-word" data-word="CLEAN QUEST" aria-hidden="true"></svg>
+    <span class="logo-fallback">CLEAN QUEST</span>
+    <span class="tag-exp">実証実験中</span>
+  </a>
+  <div class="hdr-right">
+    <a class="pill pill--sm" href="#" data-app-link>アプリを開く<span class="pill-dot"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 6h9M6.5 2.5 10 6l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.7"/></svg></span></a>
+  </div>
+</header>
+
+<nav class="side" id="side" aria-label="ページ内の案内">
+  <button class="side-cur" id="side-cur" type="button" aria-expanded="false" aria-controls="side-list"><i aria-hidden="true"></i><span id="side-cur-label">MENU</span></button>
+  <ul id="side-list">
+    <li><a href="#how" aria-label="しくみ">HOW</a></li>
+    <li><a href="#habit" aria-label="続けやすさ">HABIT</a></li>
+    <li><a href="#together" aria-label="みんな">TOGETHER</a></li>
+    <li><a href="#safety" aria-label="安全のルール">SAFETY</a></li>
+    <li><a href="#about" aria-label="実験について">ABOUT</a></li>
+    <li><a href="#faq" aria-label="よくある質問">FAQ</a></li>
+  </ul>
+  <div>
+    <button class="pick-toggle" id="pick-toggle" type="button" aria-pressed="true">PICK : <b>ON</b></button>
+    <p class="pick-count" id="pick-count" aria-live="polite">かけらに触れると、拾えます</p>
+  </div>
+</nav>
+
+<div class="ticker" aria-label="実証実験中。対象は武蔵野市・三鷹市・小金井市。無料。インストール不要。">
+  <div class="ticker-track" aria-hidden="true">
+    <span>実証実験中</span><span>武蔵野市・三鷹市・小金井市</span><span>無料</span><span>インストール不要</span><span>内容や仕様が変わることがあります</span>
+    <span>実証実験中</span><span>武蔵野市・三鷹市・小金井市</span><span>無料</span><span>インストール不要</span><span>内容や仕様が変わることがあります</span>
+  </div>
+</div>
+
+<main id="top">
+
+<!-- 3.1 冒頭 -->
+<section class="hero picking" id="hero" aria-labelledby="hero-title">
+  <div class="hero-frags" aria-hidden="true">
+    <svg class="frag" style="--x:-3%;--y:3%;--w:11vw;--r:-8deg" viewBox="0 0 100 100"><g class="frag-in" style="--dur:10s;--dx:8px;--dy:-12px"><circle cx="50" cy="50" r="50" fill="url(#mapA)"/></g></svg>
+    <svg class="frag" style="--x:7%;--y:12%;--w:5vw;--r:32deg" viewBox="0 0 100 30"><g class="frag-in" style="--dur:8s;--dx:-6px;--dy:8px"><rect width="100" height="30" class="f-ink"/></g></svg>
+    <svg class="frag" style="--x:21%;--y:90%;--w:7vw;--r:24deg" viewBox="0 0 100 50"><g class="frag-in" style="--dur:11s;--dx:10px;--dy:-6px"><path d="M0 50a50 50 0 0 1 100 0Z" class="f-green"/></g></svg>
+    <svg class="frag" style="--x:34%;--y:93%;--w:11vw;--r:-34deg" viewBox="0 0 100 22"><g class="frag-in" style="--dur:9s;--dx:6px;--dy:10px"><rect width="100" height="22" fill="url(#mapB)"/></g></svg>
+    <svg class="frag" style="--x:66%;--y:9%;--w:12vw;--r:9deg" viewBox="0 0 100 130"><g class="frag-in" style="--dur:12s;--dx:-10px;--dy:12px"><rect width="100" height="130" fill="url(#mapC)"/></g></svg>
+    <svg class="frag" style="--x:76%;--y:6%;--w:4vw;--r:-20deg" viewBox="0 0 100 100"><g class="frag-in" style="--dur:7s;--dx:8px;--dy:6px"><circle cx="50" cy="50" r="50" class="f-green"/></g></svg>
+    <svg class="frag" style="--x:83%;--y:22%;--w:15vw;--r:0deg" viewBox="0 0 100 100"><g class="frag-in" style="--dur:13s;--dx:-8px;--dy:-10px"><circle cx="50" cy="50" r="50" class="f-tint"/></g></svg>
+    <svg class="frag" style="--x:88%;--y:30%;--w:9vw;--r:-12deg" viewBox="0 0 100 100"><g class="frag-in" style="--dur:9s;--dx:6px;--dy:12px"><path d="M0 0H100V100A100 100 0 0 1 0 0Z" fill="url(#mapA)"/></g></svg>
+    <svg class="frag" style="--x:72%;--y:47%;--w:10vw;--r:-14deg" viewBox="0 0 100 70"><g class="frag-in" style="--dur:10s;--dx:-6px;--dy:10px"><rect width="100" height="70" fill="url(#mapB)"/></g></svg>
+    <svg class="frag" style="--x:80%;--y:60%;--w:3.4vw;--r:58deg" viewBox="0 0 100 26"><g class="frag-in" style="--dur:6s;--dx:4px;--dy:-8px"><rect width="100" height="26" class="f-ink"/></g></svg>
+    <svg class="frag" style="--x:67%;--y:74%;--w:7vw;--r:16deg" viewBox="0 0 100 90"><g class="frag-in" style="--dur:11s;--dx:8px;--dy:-8px"><path d="M50 0 100 90H0Z" class="f-green"/></g></svg>
+    <svg class="frag" style="--x:90%;--y:72%;--w:8vw;--r:0deg" viewBox="0 0 100 100"><g class="frag-in" style="--dur:8s;--dx:-6px;--dy:-10px"><circle cx="50" cy="50" r="50" class="f-sand"/></g></svg>
+    <svg class="frag" style="--x:74%;--y:84%;--w:6vw;--r:-30deg" viewBox="0 0 100 26"><g class="frag-in" style="--dur:9s;--dx:6px;--dy:6px"><rect width="100" height="26" class="f-gray"/></g></svg>
+    <svg class="frag" style="--x:96%;--y:46%;--w:6vw;--r:90deg" viewBox="0 0 100 50"><g class="frag-in" style="--dur:10s;--dx:-4px;--dy:8px"><path d="M0 50a50 50 0 0 1 100 0Z" fill="url(#mapC)"/></g></svg>
+    <svg class="frag" style="--x:55%;--y:4%;--w:2.6vw;--r:0deg" viewBox="0 0 100 100"><g class="frag-in" style="--dur:7s;--dx:6px;--dy:10px"><circle cx="50" cy="50" r="50" class="f-ink"/></g></svg>
+  </div>
+  <div class="hero-in">
+    <h1 id="hero-title"><span class="ln"><span style="--i:0">見つけたごみを、</span></span><span class="ln"><span style="--i:1">写真に1枚。</span></span></h1>
+    <p class="hero-lead">拾って捨てると、ポイントとバッジが集まる。<br>武蔵野市・三鷹市・小金井市で試している、実証実験のアプリです。</p>
+    <div class="hero-cta">
+      <a class="pill" href="#" data-app-link>アプリを開く<span class="pill-dot"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 6h9M6.5 2.5 10 6l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.7"/></svg></span></a>
+      <a class="pill pill--line" href="#how">しくみを見る<svg viewBox="0 0 12 12" aria-hidden="true"><path d="M6 1v9M2.5 6.5 6 10l3.5-3.5" fill="none" stroke="currentColor" stroke-width="1.7"/></svg></a>
+    </div>
+    <ul class="hero-facts" aria-label="このアプリについて">
+      <li>実証実験中</li><li>武蔵野市・三鷹市・小金井市</li><li>無料</li><li>インストール不要・スマホのブラウザで使えます</li>
+    </ul>
+    <p class="hero-note">※実験のため、内容や仕様が変わることがあります。</p>
+  </div>
+</section>
+
+<!-- 3.2 この実験で確かめたいこと -->
+<section class="wrap concept" aria-labelledby="concept-title">
+  <div class="mosaic" aria-hidden="true">
+    <svg class="tile" style="left:8%;top:0;width:52%;height:46%" viewBox="0 0 100 100" preserveAspectRatio="none"><rect width="100" height="100" fill="url(#mapB)"/></svg>
+    <svg class="tile" style="left:0;top:40%;width:46%;height:38%" viewBox="0 0 100 100" preserveAspectRatio="none"><rect width="100" height="100" fill="url(#mapA)"/></svg>
+    <svg class="tile" style="left:42%;top:30%;width:50%;height:40%" viewBox="0 0 100 100" preserveAspectRatio="none"><rect width="100" height="100" fill="url(#mapC)"/></svg>
+    <svg class="tile" style="left:22%;top:66%;width:44%;height:34%" viewBox="0 0 100 100" preserveAspectRatio="none"><rect width="100" height="100" fill="url(#mapB)"/></svg>
+    <svg class="tile" style="left:64%;top:4%;width:22%;height:22%" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" class="f-green"/></svg>
+    <svg class="tile" style="left:70%;top:72%;width:18%;height:18%" viewBox="0 0 100 100"><path d="M0 100a100 100 0 0 1 100-100V100Z" class="f-sand"/></svg>
+    <svg class="tile" style="left:30%;top:22%;width:40%;height:52%;overflow:visible" viewBox="0 0 100 130"><g transform="translate(30 70) scale(1.4)"><use href="#pin-shape" class="pin--ok" style="--pin-fill:var(--green)"/></g><g transform="translate(72 46)"><use href="#pin-shape"/></g><g transform="translate(58 112) scale(.9)"><use href="#pin-shape" style="--pin-fill:#2B2A28"/></g></svg>
+  </div>
+  <div class="concept-body">
+    <h2 id="concept-title">この実験で、<br>確かめたいこと</h2>
+    <p>ごみを見つけても、どこへ伝えればいいか分からない。拾っても、やった実感が残らない。ひとりだと、なかなか続かない。</p>
+    <p>だから、この実験では<strong>「報告する → 拾う → 見える形で残る」</strong>という流れが、実際に使われるか、続くかを確かめます。</p>
+    <div class="honest">
+      <svg viewBox="0 0 22 22" aria-hidden="true"><circle cx="11" cy="11" r="9.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M11 6v6.5" stroke="currentColor" stroke-width="1.8"/><circle cx="11" cy="15.6" r="1.1" fill="currentColor"/></svg>
+      <h3>まだ分かっていないこと</h3>
+      <p>ごみの量が減るかどうか、効果がどれくらいあるかは、まだ分かっていません。この段階では、それを測りません。</p>
+    </div>
+  </div>
+</section>
+
+<!-- signature: かけらが集まって文字になる -->
+<section class="assemble" id="assemble" aria-label="散らばったかけらが集まるイメージ">
+  <div class="assemble-sticky">
+    <svg class="assemble-word" data-word="CLEAN QUEST" data-scatter="big" aria-hidden="true"></svg>
+    <p class="assemble-cap" id="assemble-cap">ひとつの報告が、地図の1点になる。<small>One photo, one piece, one pin.</small></p>
+  </div>
+</section>
+
+<!-- 3.3 しくみ -->
+<section class="sec" id="how" aria-labelledby="how-title" style="padding-bottom:0">
+  <div class="wrap">
+    <div class="shead">
+      <p class="shead-word" aria-hidden="true">HOW</p>
+      <h2 id="how-title">報告のしかた</h2>
+      <p class="shead-tag">Three ways to report.</p>
+    </div>
+  </div>
+  <div class="panel">
+    <svg viewBox="0 0 1600 600" preserveAspectRatio="xMaxYMid slice" aria-hidden="true">
+      <use href="#streets"/>
+      <g class="pin pin--ok" transform="translate(1238 382)"><use href="#pin-shape"/></g>
+      <g class="pin pin--found" transform="translate(1130 250)"><use href="#pin-shape"/></g>
+      <g class="pin" transform="translate(1420 248)"><use href="#pin-shape"/></g>
+      <g class="pin pin--ok" transform="translate(992 222)"><use href="#pin-shape"/></g>
+      <g class="pin pin--found" transform="translate(1540 400)"><use href="#pin-shape"/></g>
+      <g class="pin pin--ok" transform="translate(1296 520)"><use href="#pin-shape"/></g>
+      <g class="pin" transform="translate(880 300)"><use href="#pin-shape"/></g>
+    </svg>
+    <div class="panel-card">
+      <h3>報告のしかたは、3つ。</h3>
+      <p>どれも、写真を1枚送るだけ。運営が確認して承認すると、ポイントが届きます。</p>
+      <ul class="types">
+        <li class="type">
+          <h4>その場で捨てた</h4>
+          <p class="type-pt"><span class="num">+40</span><small>ポイント</small></p>
+          <p>見つけたごみをその場で拾い、分別して捨てる。捨てたあとのごみ箱を、写真に1枚撮ります。</p>
+          <p class="when"><b>どんなときに</b>通りがかりに、手軽に。</p>
+        </li>
+        <li class="type">
+          <h4>ごみを見つけた</h4>
+          <p class="type-pt"><span class="num">+10</span><small>ポイント</small></p>
+          <p>ごみの写真と種類を送ると、地図にピンが立ち、ほかの人が見つけられるようになります。</p>
+          <p class="when"><b>どんなときに</b>いま拾えないときに。</p>
+        </li>
+        <li class="type">
+          <h4>地図のごみを拾った</h4>
+          <p class="type-pt"><span class="num">+30</span><small>ポイント</small></p>
+          <p>地図に載っているごみを拾って捨て、その場の写真を送ります。</p>
+          <p class="when"><b>どんなときに</b>見つけた人の報告に、結びつけて。</p>
+        </li>
+      </ul>
+      <p class="exchange">
+        <svg viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M4 16 16 4" stroke="currentColor" stroke-width="1.5"/></svg>
+        <span><b>ポイントとコインは、現金・商品券などと交換できません。</b>実験のあいだは、アプリの中の記録とお楽しみ用です。</span>
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- 報告から届くまで:円の流れ -->
+<section class="flow" id="flow" aria-labelledby="flow-title">
+  <div class="flow-sticky">
+    <div class="shead flow-shead">
+      <p class="shead-word" aria-hidden="true">FLOW</p>
+      <h2 id="flow-title">報告から、届くまで</h2>
+      <p class="shead-tag">Photo, review, reward.</p>
+    </div>
+    <div class="ring">
+      <svg class="arc" viewBox="-6 -6 112 112" aria-hidden="true">
+        <circle class="arc-base" cx="50" cy="50" r="50"/>
+        <path class="arc-path" id="arc-path" d="M50 0"/>
+        <path class="arc-head" id="arc-head" d="M0 0"/>
+      </svg>
+      <div class="node node-1 on" aria-hidden="true">
+        <svg viewBox="0 0 120 160"><rect width="120" height="160" fill="#ECEEEA"/><rect x="0" y="0" width="120" height="160" fill="url(#mapB)" opacity=".7"/><rect x="34" y="54" width="52" height="70" rx="6" fill="#2B2A28"/><rect x="38" y="62" width="44" height="54" rx="2" fill="#E9E1CF"/><path d="M46 104h28l-3-26H49Z" fill="#2E7D4F"/><path d="M44 78h32" stroke="#2B2A28" stroke-width="3"/><path d="M26 40v-10h10M84 30h10v10M94 130v10H84M36 140H26v-10" fill="none" stroke="#2B2A28" stroke-width="3"/></svg>
+      </div>
+      <div class="node node-2" aria-hidden="true">
+        <svg viewBox="0 0 120 160"><rect width="120" height="160" fill="#DCEADF"/><circle cx="60" cy="76" r="34" fill="#fff"/><circle cx="60" cy="76" r="34" fill="none" stroke="#2E7D4F" stroke-width="4"/><path d="M44 77l11 11 21-24" fill="none" stroke="#2E7D4F" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/><rect x="26" y="126" width="68" height="8" rx="4" fill="#2B2A28"/><rect x="36" y="140" width="48" height="6" rx="3" fill="#C9CCC5"/></svg>
+      </div>
+      <div class="node node-3" aria-hidden="true">
+        <svg viewBox="0 0 120 160"><rect width="120" height="160" fill="#E9E1CF"/><circle cx="40" cy="58" r="20" fill="#2E7D4F"/><rect x="37" y="72" width="6" height="22" fill="#6E5A44"/><path d="M84 40 100 72H68Z" fill="#1F5C39"/><rect x="81" y="72" width="6" height="18" fill="#6E5A44"/><rect x="24" y="100" width="72" height="5" rx="2" fill="#6E5A44"/><rect x="24" y="108" width="72" height="5" rx="2" fill="#6E5A44"/><circle cx="60" cy="134" r="12" fill="#F6E7B4" stroke="#B79A3E" stroke-width="3"/><circle cx="82" cy="138" r="9" fill="#F6E7B4" stroke="#B79A3E" stroke-width="3"/></svg>
+      </div>
+      <div class="ring-center">
+        <div class="step on" data-step="0">
+          <p class="step-top"><span class="num">[01]</span><span>写真を撮る</span></p>
+          <p class="step-word" aria-hidden="true">PHOTO</p>
+          <p>顔、車のナンバー、家の窓が写らないように。<b>写真ファイルの位置情報などは、送るときに消えます。</b></p>
+        </div>
+        <div class="step" data-step="1">
+          <p class="step-top"><span class="num">[02]</span><span>運営が確認する</span></p>
+          <p class="step-word" aria-hidden="true">REVIEW</p>
+          <p>人の目で見て、承認か却下を決めます。却下のときは、理由が表示されます。</p>
+        </div>
+        <div class="step" data-step="2">
+          <p class="step-top"><span class="num">[03]</span><span>ポイントとコインが届く</span></p>
+          <p class="step-word" aria-hidden="true">REWARD</p>
+          <p>経験値でレベルが上がり、コインでマイ街にアイテムを置けます。</p>
+        </div>
+      </div>
+    </div>
+    <p class="flow-hint" aria-hidden="true">Scroll down<svg viewBox="0 0 16 10"><path d="M1 1l7 7 7-7" fill="none" stroke="currentColor" stroke-width="1.3"/></svg></p>
+  </div>
+</section>
+
+<!-- 3.3 補足:報告の場所 & 地図の見本 -->
+<section class="wrap sec" aria-label="地図の画面" style="padding-top:0">
+  <div class="grid" style="align-items:center">
+    <div class="col-text">
+      <ul class="rows">
+        <li><h3>報告の場所</h3><p>写真ファイルに埋め込まれた位置情報などは、送るときに消えます。報告の場所は、地図に載せるために別に送ります。</p></li>
+        <li><h3>地図のピン</h3><p>「ごみを見つけた」の報告は、承認されると地図にピンが立ちます。ほかの人がそのピンを見て、拾いに行けます。</p></li>
+      </ul>
+    </div>
+    <div class="col-fig">
+      <figure class="phone-wrap">
+        <figcaption class="phone-label">画面の見本:地図(例)</figcaption>
+        <div class="phone">
+          <div class="scr scr--map">
+            <div class="scr-bar">地図</div>
+            <span class="scr-ex">例</span>
+            <div class="scr-map">
+              <svg viewBox="1010 150 330 560" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+                <use href="#streets"/>
+                <g class="pin pin--ok" transform="translate(1238 382)"><use href="#pin-shape"/></g>
+                <g class="pin pin--found" transform="translate(1130 250)"><use href="#pin-shape"/></g>
+                <g class="pin" transform="translate(1080 470)"><use href="#pin-shape"/></g>
+                <g class="pin pin--found" transform="translate(1300 230)"><use href="#pin-shape"/></g>
+              </svg>
+            </div>
+            <div class="sheet">
+              <div class="sheet-row"><span class="sheet-kind">吸い殻</span><span class="st-ok"><svg viewBox="0 0 10 10" aria-hidden="true"><path d="M1.5 5.2 4 7.5 8.5 2.5" fill="none" stroke="currentColor" stroke-width="1.6"/></svg>承認済み</span></div>
+              <p class="sheet-place"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M6 11C3.5 8 2 6.3 2 4.6a4 4 0 0 1 8 0C10 6.3 8.5 8 6 11Z" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="6" cy="4.6" r="1.4" fill="currentColor"/></svg>駅北口の植え込み付近</p>
+              <div class="sheet-btn"><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M2 4h10l-1 8.5H3L2 4ZM5 4V2h4v2" fill="none" stroke="currentColor" stroke-width="1.4"/></svg>これを拾った</div>
+            </div>
+          </div>
+        </div>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- 3.4 続けやすくする工夫 -->
+<section class="sec sec--tint" id="habit" data-nav aria-labelledby="habit-title">
+  <div class="wrap">
+    <div class="shead">
+      <p class="shead-word" aria-hidden="true">HABIT</p>
+      <h2 id="habit-title">続けやすくする工夫</h2>
+      <p class="shead-tag">Rest anytime. Nothing is lost.</p>
+    </div>
+    <ul class="rows">
+      <li><h3>バッジと、小さな目標</h3><p>バッジと、週ごとの小さな目標(クエスト)があります。</p></li>
+      <li><h3>マイ街</h3><p>もらったコインで、木や花、ベンチなどを置いて、自分の小さな街を育てます。街は12マスです。</p></li>
+      <li><h3>連続記録はありません</h3><p>毎日続けなくて大丈夫です。数日あいても、<span class="mark">積み上げたものは消えません。</span></p></li>
+      <li><h3>ランキングは任意</h3><p>承認された「拾った」の数で順位がつきます。参加者が30人に届くまでは表示されません。自分の名前は隠せます。</p></li>
+    </ul>
+    <div class="figs">
+      <figure class="phone-wrap">
+        <figcaption class="phone-label">画面の見本:マイ街(例)</figcaption>
+        <div class="phone">
+          <div class="scr">
+            <div class="scr-bar">マイ街</div>
+            <span class="scr-ex">例</span>
+            <div class="scr-body">
+              <div class="lv"><b>レベル <span class="num">4</span></b><span>次のレベルまで あと少し</span></div>
+              <div class="bar" aria-hidden="true"><i></i></div>
+              <div class="town" aria-label="12マスのうち5マスにアイテムを置いた例">
+                <div class="slot"><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="16" r="11" fill="#2E7D4F"/><rect x="18" y="24" width="4" height="11" fill="#6E5A44"/></svg></div>
+                <div class="slot"><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="15" r="4" fill="#C98B6B"/><circle cx="14" cy="15" r="4" fill="#E0B094"/><circle cx="26" cy="15" r="4" fill="#E0B094"/><circle cx="20" cy="9" r="4" fill="#E0B094"/><circle cx="20" cy="21" r="4" fill="#E0B094"/><path d="M20 24v12" stroke="#2E7D4F" stroke-width="2"/></svg></div>
+                <div class="slot slot--empty"></div>
+                <div class="slot"><svg viewBox="0 0 40 40" aria-hidden="true"><rect x="7" y="17" width="26" height="4" rx="1" fill="#6E5A44"/><rect x="7" y="23" width="26" height="4" rx="1" fill="#6E5A44"/><path d="M10 27v7M30 27v7M10 13v4M30 13v4" stroke="#2B2A28" stroke-width="2"/></svg></div>
+                <div class="slot slot--empty"></div>
+                <div class="slot"><svg viewBox="0 0 40 40" aria-hidden="true"><path d="M20 5 31 26H9Z" fill="#1F5C39"/><path d="M20 12 29 30H11Z" fill="#2E7D4F"/><rect x="18" y="30" width="4" height="6" fill="#6E5A44"/></svg></div>
+                <div class="slot slot--empty"></div>
+                <div class="slot slot--empty"></div>
+                <div class="slot slot--empty"></div>
+                <div class="slot"><svg viewBox="0 0 40 40" aria-hidden="true"><circle cx="20" cy="15" r="4" fill="#B79A3E"/><circle cx="14" cy="15" r="4" fill="#E2CF85"/><circle cx="26" cy="15" r="4" fill="#E2CF85"/><circle cx="20" cy="9" r="4" fill="#E2CF85"/><circle cx="20" cy="21" r="4" fill="#E2CF85"/><path d="M20 24v12" stroke="#2E7D4F" stroke-width="2"/></svg></div>
+                <div class="slot slot--empty"></div>
+                <div class="slot slot--empty"></div>
+              </div>
+              <div class="coins"><span>コイン</span><b class="num">120</b></div>
+              <p class="sub-h">バッジ</p>
+              <div class="badges">
+                <span class="badge" aria-label="取得済みのバッジ"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M2.5 6.3 5 8.6 9.5 3.6" fill="none" stroke="currentColor" stroke-width="1.6"/></svg></span>
+                <span class="badge" aria-label="取得済みのバッジ"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M6 1.5 7.3 4.6l3.2.3-2.4 2.1.8 3.2L6 8.5 3.1 10.2l.8-3.2-2.4-2.1 3.2-.3Z" fill="currentColor"/></svg></span>
+                <span class="badge" aria-label="取得済みのバッジ"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M6 11C3.5 8 2 6.3 2 4.6a4 4 0 0 1 8 0C10 6.3 8.5 8 6 11Z" fill="currentColor"/></svg></span>
+                <span class="badge badge--off" aria-label="未取得のバッジ"><svg viewBox="0 0 12 12" aria-hidden="true"><rect x="2.5" y="5.5" width="7" height="5" rx="1" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M4 5.5V4a2 2 0 0 1 4 0v1.5" fill="none" stroke="currentColor" stroke-width="1.3"/></svg></span>
+                <span class="badge badge--off" aria-label="未取得のバッジ"><svg viewBox="0 0 12 12" aria-hidden="true"><rect x="2.5" y="5.5" width="7" height="5" rx="1" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M4 5.5V4a2 2 0 0 1 4 0v1.5" fill="none" stroke="currentColor" stroke-width="1.3"/></svg></span>
+                <span class="badge badge--off" aria-label="未取得のバッジ"><svg viewBox="0 0 12 12" aria-hidden="true"><rect x="2.5" y="5.5" width="7" height="5" rx="1" fill="none" stroke="currentColor" stroke-width="1.3"/><path d="M4 5.5V4a2 2 0 0 1 4 0v1.5" fill="none" stroke="currentColor" stroke-width="1.3"/></svg></span>
+              </div>
+              <p class="scr-foot">数字は例です。実際の記録ではありません。</p>
+            </div>
+          </div>
+        </div>
+      </figure>
+      <figure class="phone-wrap">
+        <figcaption class="phone-label">画面の見本:ランキング(例)</figcaption>
+        <div class="phone">
+          <div class="scr">
+            <div class="scr-bar">ランキング</div>
+            <span class="scr-ex">例</span>
+            <div class="scr-body">
+              <p class="rk-note">承認された「拾った」の数で並びます。</p>
+              <ol class="rk">
+                <li><span class="num">1</span><span>あおば</span><span class="num">18件</span></li>
+                <li><span class="num">2</span><span>kei</span><span class="num">15件</span></li>
+                <li><span class="num">3</span><span class="hid">名前を表示しない人</span><span class="num">12件</span></li>
+                <li><span class="num">4</span><span>そら</span><span class="num">9件</span></li>
+                <li class="me"><span class="num">5</span><span>あなた</span><span class="num">7件</span></li>
+                <li><span class="num">6</span><span>ゆう</span><span class="num">6件</span></li>
+                <li><span class="num">7</span><span class="hid">名前を表示しない人</span><span class="num">4件</span></li>
+              </ol>
+              <div class="toggle"><span>ランキングに名前を出す</span><i aria-hidden="true"></i></div>
+              <p class="scr-foot">順位・表示名・件数は、すべて例です。実際の人や記録ではありません。参加者が30人に届くまでは表示されません。</p>
+            </div>
+          </div>
+        </div>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<!-- 3.5 みんな -->
+<section class="sec" id="together" data-nav aria-labelledby="together-title">
+  <div class="wrap">
+    <div class="shead">
+      <p class="shead-word" aria-hidden="true">TOGETHER</p>
+      <h2 id="together-title">みんなの機能</h2>
+      <p class="shead-tag">Alone, or with neighbors.</p>
+    </div>
+    <div class="grid" style="align-items:start">
+      <div class="col-text">
+        <ul class="rows">
+          <li><h3>掃除の募集</h3><p>日時・場所・定員を決めて、仲間を募れます。募集をつくるときは、安全のルールの確認が必要です。集まるのは、明るい時間の公共の場所です。</p></li>
+          <li><h3>ごみ情報</h3><p>ごみが多い場所を、写真つきで知らせられます(写真は必須です)。</p></li>
+          <li><h3>いいね・コメント・参加</h3><p>気になる投稿に、いいねやコメントができます。募集には参加できます。</p></li>
+          <li><h3>投稿はすぐ公開されます</h3><p>そのかわり、通報とブロックがあります。通報が3人分になると、その投稿は自動で見えなくなります。</p></li>
+        </ul>
+      </div>
+      <div class="col-fig">
+        <figure class="phone-wrap">
+          <figcaption class="phone-label">画面の見本:みんな(例)</figcaption>
+          <div class="phone">
+            <div class="scr">
+              <div class="scr-bar">みんな</div>
+              <span class="scr-ex">例</span>
+              <div class="scr-body">
+                <div class="tabs" aria-hidden="true"><span class="on">すべて</span><span>募集</span><span>ごみ情報</span></div>
+                <article class="post">
+                  <span class="post-tag">掃除の募集</span>
+                  <p class="post-title">朝の30分、公園のまわりを</p>
+                  <dl><dt>日時</dt><dd>土曜 9:00〜9:30</dd><dt>場所</dt><dd>公園の入口</dd><dt>定員</dt><dd>8人(参加 3人)</dd></dl>
+                  <div class="acts">
+                    <span><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 12S1.5 8.6 1.5 4.9A2.9 2.9 0 0 1 7 3.6a2.9 2.9 0 0 1 5.5 1.3C12.5 8.6 7 12 7 12Z" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>12</span>
+                    <span><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M2 2.5h10v7H6L3 12V9.5H2Z" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>4</span>
+                    <span class="join">参加する</span>
+                  </div>
+                </article>
+                <article class="post">
+                  <span class="post-tag post-tag--info">ごみ情報</span>
+                  <div class="post-photo"><svg viewBox="0 0 20 20" aria-hidden="true"><path d="M2.5 6h3l1.5-2h6L14.5 6h3v10h-15Z" fill="none" stroke="currentColor" stroke-width="1.3"/><circle cx="10" cy="11" r="3" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>写真</div>
+                  <p class="post-title">植え込みに空き缶がたまっています</p>
+                  <div class="acts">
+                    <span><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M7 12S1.5 8.6 1.5 4.9A2.9 2.9 0 0 1 7 3.6a2.9 2.9 0 0 1 5.5 1.3C12.5 8.6 7 12 7 12Z" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>5</span>
+                    <span><svg viewBox="0 0 14 14" aria-hidden="true"><path d="M2 2.5h10v7H6L3 12V9.5H2Z" fill="none" stroke="currentColor" stroke-width="1.3"/></svg>2</span>
+                  </div>
+                </article>
+                <p class="scr-foot">投稿の内容・数は例です。</p>
+              </div>
+            </div>
+          </div>
+        </figure>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3.6 安全のルール -->
+<section class="sec sec--tint" id="safety" data-nav aria-labelledby="safety-title">
+  <div class="wrap">
+    <div class="shead">
+      <p class="shead-word" aria-hidden="true">SAFETY</p>
+      <h2 id="safety-title">安全のルール</h2>
+      <p class="shead-tag">Safety comes first.</p>
+    </div>
+    <p class="lead">拾うことより、安全を先に。参加する前に、6つのルールを確認してください。</p>
+    <ol class="safety">
+      <li><span class="num">01</span><h3>危険物は拾わない</h3><p>注射器、割れたガラス、薬品、電池、刃物などは触らず、自治体や警察に連絡してください。アプリでも「危険物」は、拾った報告にできません。</p></li>
+      <li><span class="num">02</span><h3>危ない場所には入らない</h3><p>車道、線路、水辺、崖のそばや私有地には入りません。歩きスマホはしないでください。手袋やトングを使い、分別して捨てます。</p></li>
+      <li><span class="num">03</span><h3>人や家を写さない</h3><p>顔、車のナンバー、家の窓が写らないように撮影します。写真ファイルの位置情報などは、送るときに消えます。</p></li>
+      <li><span class="num">04</span><h3>人の目で確認する</h3><p>報告は、運営が確認してから承認します。同じ写真の使い回しや、近い場所への短い時間での重複報告は、自動でチェックされます。</p></li>
+      <li><span class="num">05</span><h3>通報とブロック</h3><p>気になる投稿は通報でき、見たくない相手はブロックできます。</p></li>
+      <li><span class="num">06</span><h3>無理のない上限</h3><p>報告は、1日5件までです。</p></li>
+    </ol>
+  </div>
+</section>
+
+<!-- 3.7 実証実験について -->
+<section class="sec" id="about" data-nav aria-labelledby="about-title">
+  <div class="wrap">
+    <div class="shead">
+      <p class="shead-word" aria-hidden="true">ABOUT</p>
+      <h2 id="about-title">実証実験について</h2>
+      <p class="shead-tag">About this trial.</p>
+    </div>
+    <dl class="rows">
+      <div><dt>目的</dt><dd>「報告 → 拾う → ポイント」の仕組みを使う人がいるか、続くかを確かめます。ごみの量が減るかどうかは測りません。</dd></div>
+      <div><dt>対象エリア</dt><dd>武蔵野市・三鷹市・小金井市の公共の場所(道路、公園、商店街など)</dd></div>
+      <div><dt>期間</dt><dd><span class="tbd">【実施期間】</span></dd></div>
+      <div><dt>ポイントについて</dt><dd>実験のあいだ、ポイントやコインは現金・商品券などと交換できません。アプリの中の記録とお楽しみ用です。</dd></div>
+      <div><dt>集める情報</dt><dd>メールアドレス、表示名、報告した写真と場所、利用状況(使われ方を確かめるため)。利用規約とプライバシーポリシーは、アプリの中で確認できます。</dd></div>
+      <div><dt>運営</dt><dd><span class="tbd">【運営者名】</span><br>連絡先:<span class="tbd">【メールアドレス】</span></dd></div>
+    </dl>
+  </div>
+</section>
+
+<!-- 3.8 よくある質問 -->
+<section class="sec sec--tint" id="faq" data-nav aria-labelledby="faq-title">
+  <div class="wrap">
+    <div class="shead">
+      <p class="shead-word" aria-hidden="true">FAQ</p>
+      <h2 id="faq-title">よくある質問</h2>
+      <p class="shead-tag">Questions.</p>
+    </div>
+    <div class="faq">
+      <details><summary><span class="latin">Q.</span>お金はかかりますか<span class="pm" aria-hidden="true"></span></summary><div class="ans"><span class="latin">A.</span><p>かかりません。通信料は、それぞれのご契約によります。</p></div></details>
+      <details><summary><span class="latin">Q.</span>インストールは必要ですか<span class="pm" aria-hidden="true"></span></summary><div class="ans"><span class="latin">A.</span><p>不要です。スマホのブラウザで開き、メールアドレスで登録します。ホーム画面に追加することもできます。</p></div></details>
+      <details><summary><span class="latin">Q.</span>どこで使えますか<span class="pm" aria-hidden="true"></span></summary><div class="ans"><span class="latin">A.</span><p>武蔵野市・三鷹市・小金井市の公共の場所での利用を想定しています。ほかの地域でも画面は開けますが、実験の対象外です。</p></div></details>
+      <details><summary><span class="latin">Q.</span>投稿した写真は、ほかの人に見えますか<span class="pm" aria-hidden="true"></span></summary><div class="ans"><span class="latin">A.</span><p>地図に載る「見つけた」の報告写真や、みんなの投稿の写真は、ほかの利用者に表示されます。個人が写らないように撮影してください。</p></div></details>
+      <details><summary><span class="latin">Q.</span>ポイントは何に使えますか<span class="pm" aria-hidden="true"></span></summary><div class="ans"><span class="latin">A.</span><p>いまは、マイ街にアイテムを置くために使います。現金や商品との交換はありません。</p></div></details>
+      <details><summary><span class="latin">Q.</span>やめたくなったら<span class="pm" aria-hidden="true"></span></summary>
+        <!-- 要確認: 退会時に削除されるデータの範囲(delete_my_account の実装)を確認してから公開する -->
+        <div class="ans"><span class="latin">A.</span><p>マイページから退会できます。退会すると、アカウントに結びつくデータは削除されます。</p></div></details>
+    </div>
+  </div>
+</section>
+
+<!-- 3.9 最後の呼びかけ -->
+<section class="wrap closing" aria-labelledby="closing-title">
+  <svg class="frag" style="--x:72%;--y:30%;--w:min(22vw,260px);--r:0deg" viewBox="0 0 100 100" aria-hidden="true"><g class="frag-in" style="--dur:9s;--dx:6px;--dy:-14px;--dr:8deg"><circle cx="50" cy="50" r="50" class="f-green"/></g></svg>
+  <svg class="frag" style="--x:86%;--y:62%;--w:min(9vw,110px);--r:-28deg" viewBox="0 0 100 26" aria-hidden="true"><g class="frag-in" style="--dur:7s;--dx:-6px;--dy:8px"><rect width="100" height="26" class="f-ink"/></g></svg>
+  <h2 id="closing-title">まずは、<br>1個から。</h2>
+  <p>次に外で見かけたごみを、写真に1枚。<br>それが、最初の1歩です。</p>
+  <a class="pill" href="#" data-app-link>アプリを開く<span class="pill-dot"><svg viewBox="0 0 12 12" aria-hidden="true"><path d="M1 6h9M6.5 2.5 10 6l-3.5 3.5" fill="none" stroke="currentColor" stroke-width="1.7"/></svg></span></a>
+</section>
+</main>
+
+<!-- 3.10 ページの終わり -->
+<footer class="wrap ftr">
+  <svg class="ftr-word" data-word="CLEAN QUEST" aria-hidden="true"></svg>
+  <div class="ftr-grid">
+    <dl>
+      <dt>名称</dt><dd>クリーンクエスト(仮称)/ 実証実験</dd>
+      <dt>利用規約・プライバシーポリシー</dt><dd>アプリの中で確認できます。</dd>
+      <dt>運営</dt><dd><span class="tbd">【運営者名】</span></dd>
+      <dt>地図データ</dt><dd>© OpenStreetMap contributors</dd>
+    </dl>
+    <small>このページの画面の見本と図は説明用です。数字や名前は、実際の記録ではありません。</small>
+  </div>
+</footer>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(() => {
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches || /[?&]static\b/.test(location.search);
+  if (reduce) document.documentElement.classList.add('rm');
+  const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
+
+  // アプリの公開URL(公開後に設定する)
+  const APP_URL = '';
+
+  const toastEl = document.getElementById('toast');
+  let toastTimer;
+  const toast = (msg) => {
+    toastEl.textContent = msg;
+    toastEl.classList.add('on');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toastEl.classList.remove('on'), 3800);
+  };
+  document.querySelectorAll('[data-app-link]').forEach((a) => {
+    if (APP_URL) { a.href = APP_URL; return; }
+    a.addEventListener('click', (e) => { e.preventDefault(); toast('アプリの公開URLは準備中です。公開後、ここから開けるようになります。'); });
+  });
+
+  // ---- かけらで組む文字(C L E A N Q U S T) ----
+  const S = 1.5; // 線の太さ(1文字は幅5×高さ7の単位)
+  const R = (x, y, w, h) => ({ x, y, w, h });
+  const D = (cx, cy, w, h, rot) => ({ x: cx - w / 2, y: cy - h / 2, w, h, rot });
+  const GLYPH = {
+    C: [R(0,0,5,S), R(0,0,S,7), R(0,7-S,5,S)],
+    L: [R(0,0,S,7), R(0,7-S,5,S)],
+    E: [R(0,0,S,7), R(0,0,5,S), R(0,2.75,4.2,S), R(0,7-S,5,S)],
+    A: [R(0,0,S,7), R(5-S,0,S,7), R(0,0,5,S), R(0,3,5,S)],
+    N: [R(0,0,S,7), R(5-S,0,S,7), D(2.5,3.5,S,7.4,-27)],
+    Q: [R(0,0,5,S), R(0,0,S,7), R(5-S,0,S,7), R(0,7-S,5,S), Object.assign(D(4.4,6.9,S,3.2,-45), { green: true })],
+    U: [R(0,0,S,7), R(5-S,0,S,7), R(0,7-S,5,S)],
+    S: [R(0,0,5,S), R(0,0,S,4), R(0,2.75,5,S), R(5-S,2.75,S,4.25), R(0,7-S,5,S)],
+    T: [R(0,0,5,S), R(2.5-S/2,0,S,7)],
+  };
+  let seed = 7;
+  const rnd = () => { seed = (seed * 16807) % 2147483647; return seed / 2147483647; };
+  const buildWord = (svg) => {
+    const U = 10, gap = 1.3, space = 2.6;
+    const big = svg.dataset.scatter === 'big';
+    let x = 0, out = '', pieceNo = 0;
+    for (const ch of svg.dataset.word) {
+      if (ch === ' ') {
+        // 単語のあいだに、緑の円をひとつ置く
+        const cx = (x + space / 2 - gap / 2) * U, cy = 5.6 * U, r = 0.85 * U;
+        const tx = big ? (rnd() - .5) * 900 : (rnd() - .5) * 40, ty = big ? (rnd() - .5) * 600 : (rnd() - .5) * 30;
+        out += `<circle cx="${cx}" cy="${cy}" r="${r}" fill="var(--green)" style="--tx:${tx.toFixed(0)};--ty:${ty.toFixed(0)};--tr:0"/>`;
+        x += space; continue;
+      }
+      for (const p of GLYPH[ch] || []) {
+        const tx = big ? (rnd() - .5) * 1400 : (rnd() - .5) * 46;
+        const ty = big ? (rnd() - .5) * 900 : (rnd() - .5) * 34;
+        const tr = big ? (rnd() - .5) * 540 : (rnd() - .5) * 120;
+        const fill = p.green ? 'var(--green)' : 'var(--ink)';
+        const rot = p.rot ? ` transform="rotate(${p.rot} ${((x + p.x + p.w / 2) * U).toFixed(1)} ${((p.y + p.h / 2) * U).toFixed(1)})"` : '';
+        const rect = `<rect x="${((x + p.x) * U).toFixed(1)}" y="${(p.y * U).toFixed(1)}" width="${(p.w * U).toFixed(1)}" height="${(p.h * U).toFixed(1)}" fill="${fill}" style="--tx:${tx.toFixed(0)};--ty:${ty.toFixed(0)};--tr:${tr.toFixed(0)}"/>`;
+        let piece = rect;
+        if (big && (++pieceNo % 5 === 2)) {
+          // 散らばっているあいだは街路図の切れ端に見え、組み上がると墨に戻る
+          piece = rect + rect.replace(`fill="${fill}"`, 'fill="url(#mapB)" class="scrap" stroke="var(--ink)" stroke-width="1.5"');
+        }
+        out += p.rot ? `<g${rot}>${piece}</g>` : piece;
+      }
+      x += 5 + gap;
+    }
+    const w = (x - gap) * U;
+    svg.setAttribute('viewBox', `0 0 ${w} ${7 * U}`);
+    svg.innerHTML = out;
+  };
+  document.querySelectorAll('svg[data-word]').forEach(buildWord);
+
+  // ロゴ:ホバーで少しほどける
+  const logoSvg = document.querySelector('.logo-word');
+  const logo = document.querySelector('.logo');
+  logoSvg.style.setProperty('--t', 1);
+  logoSvg.style.transition = '--t .7s cubic-bezier(.16,1,.3,1)';
+  if (!reduce) {
+    logo.addEventListener('mouseenter', () => logoSvg.style.setProperty('--t', .55));
+    logo.addEventListener('mouseleave', () => logoSvg.style.setProperty('--t', 1));
+  }
+
+  // ---- 英字見出し:文字が散った位置から集まる ----
+  document.querySelectorAll('.shead-word').forEach((el) => {
+    const text = el.textContent;
+    el.innerHTML = [...text].map((c, i) => `<span style="--i:${i};--sx:${((rnd() - .5) * 160).toFixed(0)}px;--sy:${((rnd() - .5) * 90).toFixed(0)}px;--sr:${((rnd() - .5) * 90).toFixed(0)}deg">${c}</span>`).join('');
+  });
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => { if (e.isIntersecting) { e.target.classList.add('is-in'); io.unobserve(e.target); } });
+  }, { rootMargin: '0px 0px -12% 0px' });
+  document.querySelectorAll('.shead').forEach((el) => io.observe(el));
+
+  setTimeout(() => document.body.classList.add('is-loaded'), 60);
+
+  // ---- 左下ナビの現在地 ----
+  const navLinks = [...document.querySelectorAll('.side a')];
+  const side = document.getElementById('side');
+  const sideCur = document.getElementById('side-cur');
+  const curLabel = document.getElementById('side-cur-label');
+  sideCur.addEventListener('click', () => { const open = !side.classList.contains('open'); side.classList.toggle('open', open); sideCur.setAttribute('aria-expanded', open ? 'true' : 'false'); });
+  navLinks.forEach((a) => a.addEventListener('click', () => { side.classList.remove('open'); sideCur.setAttribute('aria-expanded', 'false'); }));
+  const navIo = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      if (!e.isIntersecting) return;
+      navLinks.forEach((a) => a.setAttribute('aria-current', a.hash === '#' + e.target.id ? 'true' : 'false'));
+      const cur = navLinks.find((a) => a.hash === '#' + e.target.id);
+      if (cur) curLabel.textContent = cur.textContent;
+    });
+  }, { rootMargin: '-45% 0px -50% 0px' });
+  document.querySelectorAll('#how, [data-nav]').forEach((s) => navIo.observe(s));
+
+  // ---- かけらを拾う ----
+  const hero = document.getElementById('hero');
+  const pickBtn = document.getElementById('pick-toggle');
+  const pickCount = document.getElementById('pick-count');
+  const frags = [...hero.querySelectorAll('.frag')];
+  let picked = 0;
+  const setPick = (on) => {
+    pickBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+    pickBtn.querySelector('b').textContent = on ? 'ON' : 'OFF';
+    hero.classList.toggle('picking', on);
+    if (!picked) pickCount.textContent = on ? 'かけらに触れると、拾えます' : '';
+  };
+  pickBtn.addEventListener('click', () => setPick(pickBtn.getAttribute('aria-pressed') !== 'true'));
+  const pick = (f) => {
+    if (f.classList.contains('picked') || !hero.classList.contains('picking')) return;
+    const r = f.getBoundingClientRect();
+    const target = pickCount.getBoundingClientRect();
+    const dx = (target.left + 10) - (r.left + r.width / 2);
+    const dy = (target.top) - (r.top + r.height / 2);
+    f.style.transform = `translate(${dx}px, ${dy}px) rotate(${(rnd() - .5) * 200}deg) scale(.08)`;
+    f.classList.add('picked');
+    picked++;
+    pickCount.textContent = `拾ったかけら ${picked} / ${frags.length}`;
+    if (picked === frags.length) {
+      toast('ぜんぶ拾えました。外で見かけたら、まずは1個から。');
+      setTimeout(() => {
+        frags.forEach((g) => { g.classList.remove('picked'); g.style.transform = ''; });
+        picked = 0; pickCount.textContent = 'かけらに触れると、拾えます';
+      }, 2600);
+    }
+  };
+  frags.forEach((f) => {
+    f.addEventListener(fine ? 'pointerenter' : 'click', () => pick(f));
+  });
+  if (!fine) pickCount.textContent = '';
+
+  // ---- スクロール連動:組み上げ と 円の流れ ----
+  const hdr = document.getElementById('hdr');
+  const asm = document.getElementById('assemble');
+  const asmWord = asm.querySelector('.assemble-word');
+  const asmCap = document.getElementById('assemble-cap');
+  const flow = document.getElementById('flow');
+  const arcPath = document.getElementById('arc-path');
+  const arcHead = document.getElementById('arc-head');
+  const steps = [...flow.querySelectorAll('.step')];
+  const nodes = [...flow.querySelectorAll('.node')];
+  const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+  const easeOut = (t) => 1 - Math.pow(1 - t, 3);
+  const prog = (el) => { const r = el.getBoundingClientRect(); const total = r.height - innerHeight; return total > 0 ? clamp(-r.top / total, 0, 1) : 1; };
+
+  const drawArc = (p) => {
+    // 12時の位置から時計回りに、p(0〜1)まで弧を描き、先端に矢印を置く
+    const a0 = -Math.PI / 2, a1 = a0 + Math.max(.001, p) * Math.PI * 2 * .985;
+    const cx = 50, cy = 50, r = 50;
+    const x1 = cx + r * Math.cos(a1), y1 = cy + r * Math.sin(a1);
+    const large = (a1 - a0) > Math.PI ? 1 : 0;
+    arcPath.setAttribute('d', `M50 0 A50 50 0 ${large} 1 ${x1.toFixed(2)} ${y1.toFixed(2)}`);
+    const tx = -Math.sin(a1), ty = Math.cos(a1); // 進む向き
+    const nx = Math.cos(a1), ny = Math.sin(a1);
+    const L = 3.2;
+    const ax = x1 - tx * L + nx * L * .8, ay = y1 - ty * L + ny * L * .8;
+    const bx = x1 - tx * L - nx * L * .8, by = y1 - ty * L - ny * L * .8;
+    arcHead.setAttribute('d', `M${ax.toFixed(2)} ${ay.toFixed(2)} L${x1.toFixed(2)} ${y1.toFixed(2)} L${bx.toFixed(2)} ${by.toFixed(2)}`);
+  };
+
+  if (reduce) {
+    flow.classList.add('static');
+    flow.querySelector('.flow-sticky').appendChild(flow.querySelector('.ring-center'));
+    steps.forEach((s) => s.classList.add('on'));
+    nodes.forEach((n) => n.classList.add('on'));
+    drawArc(1);
+    asmCap.classList.add('on');
+  }
+
+  let ticking = false;
+  const update = () => {
+    ticking = false;
+    hdr.classList.toggle('is-scrolled', scrollY > 8);
+    if (reduce) return;
+    const ta = prog(asm);
+    const t = easeOut(clamp(ta / .7, 0, 1));
+    asmWord.style.setProperty('--t', t.toFixed(4));
+    asmCap.classList.toggle('on', ta > .72);
+
+    const tf = prog(flow);
+    drawArc(clamp(tf / .92, 0, 1));
+    const idx = Math.min(2, Math.floor(clamp(tf, 0, .999) * 3));
+    steps.forEach((s, i) => s.classList.toggle('on', i === idx));
+    nodes.forEach((n, i) => n.classList.toggle('on', i <= idx));
+  };
+  const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(update); } };
+  addEventListener('scroll', onScroll, { passive: true });
+  addEventListener('resize', onScroll);
+  update();
+})();
+</script>
+<noscript><style>.logo-word{display:none}.logo-fallback{display:inline!important}.assemble{display:none}</style></noscript>
+</body>
+</html>
