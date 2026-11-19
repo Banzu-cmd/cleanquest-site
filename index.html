@@ -16,7 +16,6 @@
 
 :root{
   --bg:#FFFFFF;
-  --bg-2:#F3F4F1;
   --ink:#2B2A28;
   --ink-2:#5E5B57;
   --line:rgba(43,42,40,.16);
@@ -56,7 +55,6 @@ ul,ol{padding:0;list-style:none}
 .logo-word rect,.logo-word circle{transition:transform .7s var(--ease)}
 .logo-fallback{font-family:var(--latin);font-weight:500;font-size:1.0625rem;letter-spacing:.06em}
 .js .logo-fallback{display:none}
-.no-js .logo-word{display:none}
 .tag-exp{font-size:.6875rem;line-height:1;padding:6px 10px;border-radius:999px;background:var(--green-tint);color:var(--green-ink);font-weight:700;letter-spacing:.08em;white-space:nowrap}
 .hdr-right{display:flex;align-items:center;gap:14px}
 .pill{white-space:nowrap}
@@ -248,9 +246,9 @@ ul,ol{padding:0;list-style:none}
 .step p b{font-weight:700}
 .flow-hint{position:absolute;left:50%;bottom:76px;transform:translateX(-50%);font-family:var(--latin);font-size:.75rem;color:var(--ink-2);display:grid;justify-items:center;gap:2px}
 .flow-hint svg{width:16px;height:10px}
-.no-js .step:not(.on),.flow.static .step:not(.on){opacity:1;transform:none}
+html:not(.js) .step:not(.on),.flow.static .step:not(.on){opacity:1;transform:none}
 .flow.static .flow-sticky{position:relative;height:auto;display:block;padding:var(--section) var(--gutter)}
-.flow.static .ring{position:relative;left:auto;top:auto;transform:none;margin:60px auto}
+.flow.static .ring{position:relative;left:auto;top:auto;transform:none}
 .flow.static .flow-sticky{padding-left:var(--side);padding-right:var(--gutter)}
 .flow.static .flow-shead{position:static;margin-bottom:24px}
 .rm .step{transition:none}
@@ -333,7 +331,7 @@ ul,ol{padding:0;list-style:none}
 
 /* ---------- light sections ---------- */
 .sec{padding-top:var(--section);padding-bottom:var(--section)}
-.sec--tint{background:var(--bg);border-top:1px solid var(--line)}
+.sec--rule{border-top:1px solid var(--line)}
 .grid{display:grid;grid-template-columns:repeat(12,1fr);column-gap:var(--gutter)}
 .rows{border-top:1px solid var(--line)}
 .rows > li,.rows > div{display:grid;grid-template-columns:minmax(9em,1fr) 2.2fr;column-gap:var(--gutter);padding:24px 0;border-bottom:1px solid var(--line)}
@@ -689,7 +687,7 @@ html.rm{scroll-behavior:auto}
 </section>
 
 <!-- 3.4 続けやすくする工夫 -->
-<section class="sec sec--tint" id="habit" data-nav aria-labelledby="habit-title">
+<section class="sec sec--rule" id="habit" data-nav aria-labelledby="habit-title">
   <div class="wrap">
     <div class="shead">
       <p class="shead-word" aria-hidden="true">HABIT</p>
@@ -824,7 +822,7 @@ html.rm{scroll-behavior:auto}
 </section>
 
 <!-- 3.6 安全のルール -->
-<section class="sec sec--tint" id="safety" data-nav aria-labelledby="safety-title">
+<section class="sec sec--rule" id="safety" data-nav aria-labelledby="safety-title">
   <div class="wrap">
     <div class="shead">
       <p class="shead-word" aria-hidden="true">SAFETY</p>
@@ -863,7 +861,7 @@ html.rm{scroll-behavior:auto}
 </section>
 
 <!-- 3.8 よくある質問 -->
-<section class="sec sec--tint" id="faq" data-nav aria-labelledby="faq-title">
+<section class="sec sec--rule" id="faq" data-nav aria-labelledby="faq-title">
   <div class="wrap">
     <div class="shead">
       <p class="shead-word" aria-hidden="true">FAQ</p>
