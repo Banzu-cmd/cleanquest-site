@@ -173,7 +173,8 @@ ul,ol{padding:0;list-style:none}
 /* ---------- concept (3.2) ---------- */
 .concept{display:grid;grid-template-columns:repeat(12,1fr);column-gap:var(--gutter);align-items:center;padding-block:var(--section)}
 .mosaic{grid-column:1 / 7;position:relative;aspect-ratio:1/1.02}
-.mosaic svg.tile{position:absolute;overflow:hidden}
+.mosaic-map{position:absolute;inset:0;width:100%;height:100%;clip-path:polygon(8% 0,62% 0,62% 8%,92% 8%,92% 70%,84% 70%,84% 100%,22% 100%,22% 88%,0 88%,0 40%,8% 40%)}
+.mosaic-deco{position:absolute;height:auto;overflow:visible}
 .concept-body{grid-column:8 / 13}
 .concept-body h2{font-size:clamp(1.5rem,1.1rem + 1.4vw,2.25rem);font-weight:500;line-height:1.6;letter-spacing:.06em;font-feature-settings:"palt";margin-bottom:28px}
 .concept-body p{font-size:1rem;line-height:2.1}
@@ -525,13 +526,15 @@ html.rm{scroll-behavior:auto}
 <!-- 3.2 この実験で確かめたいこと -->
 <section class="wrap concept" aria-labelledby="concept-title">
   <div class="mosaic" aria-hidden="true">
-    <svg class="tile" style="left:8%;top:0;width:52%;height:46%" viewBox="0 0 100 100" preserveAspectRatio="none"><rect width="100" height="100" fill="url(#mapB)"/></svg>
-    <svg class="tile" style="left:0;top:40%;width:46%;height:38%" viewBox="0 0 100 100" preserveAspectRatio="none"><rect width="100" height="100" fill="url(#mapA)"/></svg>
-    <svg class="tile" style="left:42%;top:30%;width:50%;height:40%" viewBox="0 0 100 100" preserveAspectRatio="none"><rect width="100" height="100" fill="url(#mapC)"/></svg>
-    <svg class="tile" style="left:22%;top:66%;width:44%;height:34%" viewBox="0 0 100 100" preserveAspectRatio="none"><rect width="100" height="100" fill="url(#mapB)"/></svg>
-    <svg class="tile" style="left:64%;top:4%;width:22%;height:22%" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" class="f-green"/></svg>
-    <svg class="tile" style="left:70%;top:72%;width:18%;height:18%" viewBox="0 0 100 100"><path d="M0 100a100 100 0 0 1 100-100V100Z" class="f-sand"/></svg>
-    <svg class="tile" style="left:30%;top:22%;width:40%;height:52%;overflow:visible" viewBox="0 0 100 130"><g transform="translate(30 70) scale(1.4)"><use href="#pin-shape" class="pin--ok" style="--pin-fill:var(--green)"/></g><g transform="translate(72 46)"><use href="#pin-shape"/></g><g transform="translate(58 112) scale(.9)"><use href="#pin-shape" style="--pin-fill:#2B2A28"/></g></svg>
+    <svg class="mosaic-map" viewBox="800 60 520 500" preserveAspectRatio="xMidYMid slice">
+      <use href="#streets"/>
+      <g class="pin pin--ok" transform="translate(1050 250) scale(1.7)"><use href="#pin-shape"/></g>
+      <g class="pin" transform="translate(1160 200) scale(1.25)"><use href="#pin-shape"/></g>
+      <g class="pin pin--found" transform="translate(1150 455) scale(1.25)"><use href="#pin-shape"/></g>
+      <g class="pin" transform="translate(920 410) scale(1.1)"><use href="#pin-shape"/></g>
+    </svg>
+    <svg class="mosaic-deco" style="left:68%;top:-3%;width:24%" viewBox="0 0 100 100"><circle cx="50" cy="50" r="50" class="f-green"/></svg>
+    <svg class="mosaic-deco" style="left:74%;top:76%;width:18%" viewBox="0 0 100 100"><path d="M0 100a100 100 0 0 1 100-100V100Z" class="f-sand"/></svg>
   </div>
   <div class="concept-body">
     <h2 id="concept-title">この実験で、<br>確かめたいこと</h2>
